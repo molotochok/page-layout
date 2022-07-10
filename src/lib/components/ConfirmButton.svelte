@@ -4,7 +4,7 @@
   const dispatch = createEventDispatcher();
 
   function handleClick() {
-    dispatch('clicked');
+    dispatch('click');
 	}
 </script>
 

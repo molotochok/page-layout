@@ -1,0 +1,21 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: "Segoe WPC", "Segoe UI", "HelveticaNeue-Light", system-ui, "Ubuntu", "Droid Sans", sans-serif;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  color: white;
+}
+
+body {
+  background-color: #3a3838;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+}

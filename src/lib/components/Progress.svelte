@@ -1,14 +1,17 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { SyncLoader } from 'svelte-loading-spinners'
 
   let circle;
   let value: number = 0;
+  let isValueHidden: boolean = true;
 
-  const STEP = 1;
-  const DELAY = 60;
+  const STEP = 0.1;
+  const DELAY = 1;
   const MAX_STROKE_DASHOFFSET: number = 880;
   const SIDE: number = 300;
   const COLOR: string = "rgba(48,152,219, 1)";
+  const PROGRESS_VALUE_MARGIN = 0.0001;
 
   onMount(() => {
     initCircle();
@@ -16,12 +19,16 @@
 
   export function updateProgress(progress: number) {
     const circleStepSize = calcCircleStepSize(progress);
+    isValueHidden = false;
     updateValue(progress, circleStepSize);
   }
 
   function initCircle(): void {
     const circleStepSize = calcCircleStepSize(value);
-    circle.style.strokeDashoffset = (100 - value) / STEP * circleStepSize;
+    circle.style.strokeDashoffset = Math.min(
+      (100 - value) / STEP * circleStepSize,
+      MAX_STROKE_DASHOFFSET
+    );
   }
 
   function calcCircleStepSize(progress: number): number {
@@ -34,7 +41,8 @@
   }
 
   function updateValue(progress: number, circleStepSize: number) {
-    if(value >= progress) return;
+    if(progress - value <= PROGRESS_VALUE_MARGIN) 
+      return;
 
     setTimeout(function(){
       value += STEP;
@@ -46,9 +54,10 @@
 </script>
 
 <div class="progress" style="--side: {SIDE}px; --color: {COLOR}; --stroke-offset: {MAX_STROKE_DASHOFFSET}">
-  <span class="text">
-    {value.toFixed(0)} %
-  </span>
+  <div class:hidden={!isValueHidden}>
+    <SyncLoader size="5" color={COLOR} unit="rem" duration="1s" />
+  </div>
+  <span class="text" class:hidden={isValueHidden}>{value.toFixed(1)} %</span>
   <svg xmlns="http://www.w3.org/2000/svg" class="svg">
     <circle 
       cx={ SIDE / 2 } 

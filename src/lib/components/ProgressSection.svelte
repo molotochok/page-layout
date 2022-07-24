@@ -2,6 +2,12 @@
   import Button from './Button.svelte';
   import Progress from './Progress.svelte';
 
+  let progress : Progress;
+
+  export function updateProgress(value: number) {
+    progress.updateProgress(value);
+  }
+
   function tryAgainClicked(): void {
     window.location.reload();
   }
@@ -12,7 +18,7 @@
 </script>
 
 <div class="progress-section">
-  <Progress/>
+  <Progress bind:this={progress}/>
   <div class="buttons">
     <Button color="#facd34" text="Try again" on:click={tryAgainClicked} />
     <Button color="#34bafa" text="Next" on:click={nextClicked} />

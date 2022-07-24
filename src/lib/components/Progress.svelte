@@ -2,10 +2,10 @@
   import { onMount } from 'svelte';
 
   let circle;
-  let value: number = 24;
+  let value: number = 0;
 
   const STEP = 1;
-  const DELAY = 45;
+  const DELAY = 60;
   const MAX_STROKE_DASHOFFSET: number = 880;
   const SIDE: number = 300;
   const COLOR: string = "rgba(48,152,219, 1)";
@@ -25,6 +25,9 @@
   }
 
   function calcCircleStepSize(progress: number): number {
+    if(progress == 0) 
+      return MAX_STROKE_DASHOFFSET / 100;
+
     const target = MAX_STROKE_DASHOFFSET * (1 - progress / 100);
     const steps = progress / STEP;
     return (MAX_STROKE_DASHOFFSET - target) / steps;
@@ -51,8 +54,16 @@
       cx={ SIDE / 2 } 
       cy={ SIDE / 2 } 
       r={ SIDE / 2 - 10 } 
-      stroke-linecap="round" 
       bind:this={circle}
+    />
+  </svg>
+
+  <svg xmlns="http://www.w3.org/2000/svg" class="svg">
+    <circle 
+      cx={ SIDE / 2 } 
+      cy={ SIDE / 2 } 
+      r={ SIDE / 2 - 10 } 
+      class="bd-circle"
     />
   </svg>
 </div>
@@ -85,6 +96,10 @@
     stroke: var(--color);
     stroke-width: 10px;
     stroke-dasharray: var(--stroke-offset);
-    stroke-dashoffset: var(--stroke-offset);
+  }
+
+  .bd-circle {
+    opacity: 0.1;
+    stroke-dashoffset: 0;
   }
 </style>

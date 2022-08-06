@@ -1,13 +1,17 @@
 <script lang='ts'>
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
   import ProgressSection from './ProgressSection.svelte';
   import Playground from './Playground.svelte';
 
-  let playground;
+  let playground, iframe;
   let isProgressSectionHidden: boolean = true;
   let progressSection: ProgressSection;
 
   const dispatch = createEventDispatcher();
+
+  onMount(async () => {
+    setupIframe();
+  });
 
   export function getWidth() {
     return playground.getWidth();
@@ -26,7 +30,18 @@
   }
 
   function finished(event) {
+    event.detail.iframe = iframe;
     dispatch('finish', event.detail);
+  }
+
+  function getIframeBody() {
+    return iframe.contentWindow.document.body;
+  }
+
+  function setupIframe() {
+    const iframeBody = getIframeBody();
+    iframeBody.style.margin = 0;
+    iframeBody.style.padding = 0;
   }
 </script>
   
@@ -38,9 +53,21 @@
   <div class:hidden="{!isProgressSectionHidden}" class="h-100p">
     <Playground bind:this={playground} on:finish={finished}></Playground>
   </div>
+
+  <iframe title="iframe" bind:this={iframe} class="iframe">
+  </iframe>
 </div>
   
 <style>
+  .iframe {
+    visibility: hidden; 
+    position: absolute; 
+    top: 0; 
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
   .playground-progress {
     position: relative;
   }

@@ -2,31 +2,12 @@
   import ReferenceImage from './lib/ReferenceImage.svelte';
   import { ImageProcessor } from './lib/services/image-processor';
 
-  import { onMount } from 'svelte';
   import CanvasContainer from './lib/components/CanvasContainer.svelte';
   import PlaygroundProgress from './lib/components/PlaygroundProgress.svelte';
   
   const imageProcessor: ImageProcessor = new ImageProcessor();
   
-  let reference;
-  let iframe;
-  let canvasContainer; 
-  let playground;
-  let difference;
-
-  onMount(async () => {
-    setupIframe();
-  });
-  
-  function getIframeBody() {
-    return iframe.contentWindow.document.body;
-  }
-
-  function setupIframe() {
-    const iframeBody = getIframeBody();
-    iframeBody.style.margin = 0;
-    iframeBody.style.padding = 0;
-  }
+  let reference, canvasContainer, playground, difference;
 
   function addCanvasToDom(canvas) {
     const width = playground.getWidth();
@@ -39,7 +20,8 @@
     const width = reference.getWidth();
     const height = reference.getHeight();
 
-    const canvas = await imageProcessor.generateCanvas(data, iframe);
+    const canvas = await imageProcessor.generateCanvas(data);
+    console.log(canvas.toDataURL());
     addCanvasToDom(canvas);
 
     difference = imageProcessor.compare(
@@ -70,10 +52,7 @@
 
 <main class="main">
   <PlaygroundProgress on:finish={compare} bind:this={playground}/>
-  <ReferenceImage bind:this={reference}/>
-
-  <iframe title="iframe" bind:this={iframe} class="iframe">
-  </iframe> 
+  <ReferenceImage bind:this={reference}/> 
 
   <CanvasContainer 
     bind:this={canvasContainer} 
@@ -84,15 +63,6 @@
 </main>
 
 <style>
-  .iframe {
-    visibility: hidden; 
-    position: absolute; 
-    top: 0; 
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-
   .main {
     display: grid;
     grid-template-columns: 50% 50%;

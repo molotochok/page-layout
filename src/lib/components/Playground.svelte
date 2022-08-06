@@ -27,8 +27,8 @@
 </script>
   
 <div class='playground' bind:this={playground}>
-  <Editor language='html' defaultText='<div class="kek"></div>' bind:this={htmlEditor} />
-  <Editor language='css' defaultText=".kek {'{'}background-color: yellow;width: 100px;height: 100px;{'}'}" bind:this={cssEditor} />
+  <Editor language='html' defaultText='' bind:this={htmlEditor} />
+  <Editor language='css' defaultText='' bind:this={cssEditor} />
   <ConfirmButton on:click={confirmClicked}/>
 </div>
   

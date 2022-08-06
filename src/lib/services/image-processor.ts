@@ -5,9 +5,9 @@ import type { Difference } from '../models';
 export class ImageProcessor {
   constructor() { } 
 
-  public async generateCanvas(data, iframe) {
+  public async generateCanvas(data) {
     const htmlElement = this.generateHtml(data.detail.html, data.detail.css);
-    const iframeDocument = this.addHtmlToDom(htmlElement, iframe);
+    const iframeDocument = this.addHtmlToDom(htmlElement, data.detail.iframe);
     return await html2canvas(iframeDocument);
   }
 
@@ -21,7 +21,8 @@ export class ImageProcessor {
 
     const mismatch = pixelmatch(playground.data, reference.data, diff.data, width, height, 
       {
-        threshold: 0.01
+        threshold: 0.01,
+        includeAA: false,
       }
     );
     diffContext.putImageData(diff, 0, 0);
@@ -33,8 +34,8 @@ export class ImageProcessor {
   }
 
   private generateHtml(html: string, css: string) {
-    const cssText = `<${''}style>${css}</${''}style>`;
-    const combinedText = `<div class='container'>${cssText}${html}</div>`;
+    const cssText = `<${''}style> ${css}</${''}style>`;
+    const combinedText = `<div>${cssText}${html}</div>`;
 
     const parsedHtml = new DOMParser().parseFromString(combinedText, "text/html");
     return parsedHtml.body.firstChild;
